@@ -15,10 +15,13 @@
   <packaging>pom</packaging>
   <modules>
     <module>base-ability</module>
+    <module>file-manager</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <logback.version>1.2.13</logback.version>
+    <slfj.version>1.7.2</slfj.version>
   </properties>
 
   <dependencyManagement>
@@ -40,6 +43,48 @@
         <artifactId>commons-io</artifactId>
         <version>2.18.0</version>
       </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2 -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-configuration2</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.10.1</version>
+      </dependency>
+
+
+      <!--logback-->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slfj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
 
       <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
       <dependency>
