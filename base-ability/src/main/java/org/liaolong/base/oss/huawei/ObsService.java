@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * Huawei OBS 服务
@@ -70,6 +71,21 @@ public class ObsService implements InitializingBean {
      */
     public PutObjectResult putObject(String bucketName, String objectKey, File uploadFile) {
         PutObjectRequest request = new PutObjectRequest(bucketName, objectKey, uploadFile);
+        request.setProgressListener(new DefaultProgressListener(objectKey));
+        request.setProgressInterval(Constants.ONE_MB);
+        return obsClient.putObject(request);
+    }
+
+    /**
+     * 流式上传
+     *
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param input 输入流
+     * @return 上传结果
+     */
+    public PutObjectResult putObject(String bucketName, String objectKey, InputStream input) {
+        PutObjectRequest request = new PutObjectRequest(bucketName, objectKey, input);
         request.setProgressListener(new DefaultProgressListener(objectKey));
         request.setProgressInterval(Constants.ONE_MB);
         return obsClient.putObject(request);

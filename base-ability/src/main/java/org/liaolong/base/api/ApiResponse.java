@@ -25,4 +25,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(0, "success", data);
     }
+
+    public static ApiResponse<Void> success() {
+        return new ApiResponse<>(0, "success", null);
+    }
 }
