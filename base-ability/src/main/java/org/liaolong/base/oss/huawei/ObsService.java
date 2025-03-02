@@ -1,13 +1,18 @@
 package org.liaolong.base.oss.huawei;
 
+import com.google.common.collect.Lists;
 import com.obs.services.ObsClient;
 import com.obs.services.exception.ObsException;
 import com.obs.services.model.HttpMethodEnum;
+import com.obs.services.model.ListObjectsRequest;
+import com.obs.services.model.ObjectListing;
 import com.obs.services.model.ObsBucket;
+import com.obs.services.model.ObsObject;
 import com.obs.services.model.PutObjectRequest;
 import com.obs.services.model.PutObjectResult;
 import com.obs.services.model.TemporarySignatureRequest;
 import com.obs.services.model.TemporarySignatureResponse;
+import org.liaolong.base.api.filemanager.file.data.FileListResult;
 import org.liaolong.base.constant.Constants;
 import org.liaolong.base.utils.AesUtils;
 import org.liaolong.base.utils.ConfigLoader;
@@ -17,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Huawei OBS 服务
@@ -80,8 +86,8 @@ public class ObsService implements InitializingBean {
      * 流式上传
      *
      * @param bucketName 桶名
-     * @param objectKey 对象key
-     * @param input 输入流
+     * @param objectKey  对象key
+     * @param input      输入流
      * @return 上传结果
      */
     public PutObjectResult putObject(String bucketName, String objectKey, InputStream input) {
@@ -107,5 +113,31 @@ public class ObsService implements InitializingBean {
         request.setObjectKey(objectKey);
         TemporarySignatureResponse response = obsClient.createTemporarySignature(request);
         return response.getSignedUrl();
+    }
+
+    /**
+     * 获取桶内对象列表
+     *
+     * @param bucketName 桶名称
+     * @param dir        文件夹
+     */
+    public FileListResult listObjects(String bucketName, String dir) {
+        // 列举文件夹中的所有对象
+        ListObjectsRequest request = new ListObjectsRequest(bucketName);
+        // 设置文件夹对象名"dir/"为前缀
+        request.setPrefix(dir);
+        request.setMaxKeys(100);
+        ObjectListing result;
+        List<FileListResult.FileAttr> fileList = Lists.newArrayList();
+        do {
+            result = obsClient.listObjects(request);
+            for (ObsObject obsObject : result.getObjects()) {
+                FileListResult.FileAttr fileAttr = FileListResult.FileAttr.builder().objectKey(obsObject.getObjectKey())
+                        .build();
+                fileList.add(fileAttr);
+            }
+            request.setMarker(result.getNextMarker());
+        } while (result.isTruncated());
+        return FileListResult.builder().dir(dir).fileList(fileList).build();
     }
 }

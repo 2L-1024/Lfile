@@ -1,10 +1,10 @@
 package org.liaolong.filemanager.file.service;
 
-import com.obs.services.model.PutObjectResult;
-import org.apache.commons.lang3.StringUtils;
 import org.liaolong.base.api.ApiResponse;
+import org.liaolong.base.api.filemanager.file.data.FileListResult;
 import org.liaolong.base.api.filemanager.file.data.UploadFileResult;
 import org.liaolong.base.api.filemanager.file.req.CreateDirRequest;
+import org.liaolong.base.api.filemanager.file.req.FileListRequest;
 import org.liaolong.base.api.filemanager.file.req.UploadFileRequest;
 import org.liaolong.base.oss.huawei.ObsService;
 import org.springframework.stereotype.Service;
@@ -37,5 +37,9 @@ public class FileOperateService {
         String objectKey = String.join("/", request.getPath(), request.getFileName());
         String tempUploadUrl = obsService.getTempUploadUrl(bucketName, objectKey);
         return UploadFileResult.builder().uploadUrl(tempUploadUrl).build();
+    }
+
+    public FileListResult listFile(FileListRequest fileListRequest) {
+        return obsService.listObjects(bucketName, fileListRequest.getDir());
     }
 }
